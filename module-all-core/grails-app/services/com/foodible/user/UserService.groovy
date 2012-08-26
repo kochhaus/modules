@@ -7,7 +7,7 @@ class UserService {
     def springSecurityService
 
     @Transactional
-    public User createUser(final String email, final String password, final String authority) {
+    public User createUser(final String email, final String password, final String authority, final boolean enabled) {
         final Role role = Role.findByAuthority(authority)
 
         if (!role){
@@ -15,10 +15,10 @@ class UserService {
         }
 
         final String encodedPassword = springSecurityService.encodePassword(password)
-        final User user = new User(email: email, password: encodedPassword, enabled: true).save()
+        final User user = new User(email: email, password: encodedPassword, enabled: enabled).save()
 
         if (user.hasErrors()){
-            return user
+            return null
         }
 
         final UserRole userRole = UserRole.create(user, role, true)
