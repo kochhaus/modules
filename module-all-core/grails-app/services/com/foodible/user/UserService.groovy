@@ -2,6 +2,8 @@ package com.foodible.user
 
 import org.springframework.transaction.annotation.Transactional
 
+import javax.persistence.EntityNotFoundException
+
 class UserService {
 
     def springSecurityService
@@ -23,5 +25,18 @@ class UserService {
 
         final UserRole userRole = UserRole.create(user, role, true)
         return userRole.user
+    }
+
+    @Transactional
+    public boolean delete(final Long id) {
+        final User userInstance = User.get(id)
+
+        if (!userInstance) {
+            throw new EntityNotFoundException("User with id ${id} not found")
+        }
+
+        UserRole.removeAll(userInstance)
+        userInstance.delete()
+        return true
     }
 }
