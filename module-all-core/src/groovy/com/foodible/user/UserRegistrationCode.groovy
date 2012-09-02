@@ -2,6 +2,7 @@ package com.foodible.user
 
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.lang.RandomStringUtils
+import org.apache.commons.lang.StringUtils
 
 class UserRegistrationCode {
 
@@ -18,8 +19,11 @@ class UserRegistrationCode {
     public UserRegistrationCode(final String token) {
         String decodedToken = new String(Base64.decodeBase64(token))
 
-        // todo: split and set values
-        //def splittedToken = decodedToken.split('.', 1)
+        def splittedToken = StringUtils.split(decodedToken, ".", 2)
+        if(splittedToken.size().equals(2)) {
+            this.userId = Long.valueOf(splittedToken[0])
+            this.registrationCode = splittedToken[1]
+        }
     }
 
     public String toToken() {

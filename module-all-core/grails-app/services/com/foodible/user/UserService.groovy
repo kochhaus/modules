@@ -7,6 +7,7 @@ import javax.persistence.EntityNotFoundException
 class UserService {
 
     def springSecurityService
+    def doiMailService
 
     @Transactional
     public User createUser(final String email
@@ -50,8 +51,34 @@ class UserService {
         user.save()
 
         String token = userRegistrationCode.toToken()
-        // todo: send mail
+
+        doiMailService.sendDOIMail('www.irgendwas.de/enable', token)
     }
+
+    @Transactional
+    public def enableAccount(UserEnableBean bean) {
+
+        try {
+
+            UserRegistrationCode userRegistrationCode = new UserRegistrationCode(bean.token)
+            User user = User.get(userRegistrationCode.userId)
+
+            if(!user){
+                bean.status = UserEnableBean.USER_NOT_FOUND
+            } else if(user.isEnabled()) {
+                bean.status = UserEnableBean.ALREADY_REGISTERED
+            } else if(user.registrationCode.equals(userRegistrationCode.registrationCode)) {
+                bean.status = UserEnableBean.TOKEN_INCORRECT
+            } else {
+                user.setEnabled(true)
+                user.save()
+                bean.status = UserEnableBean.SUCCESS
+            }
+        } catch (Exception e) {
+            bean.status = UserEnableBean.INTERNAL_ERROR
+        }
+    }
+
 
     @Transactional
     public boolean delete(final Long id) {

@@ -24,3 +24,5 @@ grails.project.dependency.resolution = {
         compile ":spring-security-core:1.2.7.3"
     }
 }
+
+grails.plugin.location.'module-all-mail' = "../../modules/module-all-mail"
