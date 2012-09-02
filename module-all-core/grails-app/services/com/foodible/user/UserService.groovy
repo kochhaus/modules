@@ -9,7 +9,12 @@ class UserService {
     def springSecurityService
 
     @Transactional
-    public User createUser(final String email, final String password, final String authority, final boolean enabled) {
+    public User createUser(final String email
+                           , final String password
+                           , final String authority
+                           , final String firstname
+                           , final String lastname
+                           , final boolean enabled) {
         final Role role = Role.findByAuthority(authority)
 
         if (!role){
@@ -17,7 +22,12 @@ class UserService {
         }
 
         final String encodedPassword = springSecurityService.encodePassword(password)
-        final User user = new User(email: email, password: encodedPassword, enabled: enabled).save()
+        final User user = new User(email: email
+                , password: encodedPassword
+                , firstname: firstname
+                , lastname: lastname
+                , enabled: enabled)
+        user.save()
 
         if (user.hasErrors()){
             return null
@@ -25,6 +35,22 @@ class UserService {
 
         final UserRole userRole = UserRole.create(user, role, true)
         return userRole.user
+    }
+
+    @Transactional
+    public void sendDOIMail(User user) {
+
+        // do not send DOI mail if user is enabled
+        if(user.isEnabled()) {
+            return
+        }
+
+        UserRegistrationCode userRegistrationCode = new UserRegistrationCode(user)
+        user.registrationCode = userRegistrationCode.registrationCode
+        user.save()
+
+        String token = userRegistrationCode.toToken()
+        // todo: send mail
     }
 
     @Transactional
@@ -39,4 +65,5 @@ class UserService {
         userInstance.delete()
         return true
     }
+
 }
