@@ -52,7 +52,9 @@ class UserService {
 
         String token = userRegistrationCode.toToken()
 
-        doiMailService.sendDOIMail('www.irgendwas.de/enable', token)
+        // todo: findout how to get URL from portal-app
+        String doiURL = "http://localhost:8080/portal/enable/$token"
+        doiMailService.sendDOIMail(doiURL)
     }
 
     @Transactional
