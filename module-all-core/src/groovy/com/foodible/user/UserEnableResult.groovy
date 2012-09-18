@@ -1,6 +1,6 @@
 package com.foodible.user
 
-class UserEnableBean {
+class UserEnableResult {
 
     final static int INTERNAL_ERROR = 0
     final static int SUCCESS = 1

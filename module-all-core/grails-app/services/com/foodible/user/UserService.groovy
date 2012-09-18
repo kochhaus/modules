@@ -58,26 +58,27 @@ class UserService {
     }
 
     @Transactional
-    public def enableAccount(UserEnableBean bean) {
+    public def enableAccount(String token) {
 
+        UserEnableResult bean = new UserEnableResult(token)
         try {
 
             UserRegistrationCode userRegistrationCode = new UserRegistrationCode(bean.token)
             User user = User.get(userRegistrationCode.userId)
 
             if(!user){
-                bean.status = UserEnableBean.USER_NOT_FOUND
+                bean.status = UserEnableResult.USER_NOT_FOUND
             } else if(user.isEnabled()) {
-                bean.status = UserEnableBean.ALREADY_REGISTERED
+                bean.status = UserEnableResult.ALREADY_REGISTERED
             } else if(user.registrationCode.equals(userRegistrationCode.registrationCode)) {
-                bean.status = UserEnableBean.TOKEN_INCORRECT
+                bean.status = UserEnableResult.TOKEN_INCORRECT
             } else {
                 user.setEnabled(true)
                 user.save()
-                bean.status = UserEnableBean.SUCCESS
+                bean.status = UserEnableResult.SUCCESS
             }
         } catch (Exception e) {
-            bean.status = UserEnableBean.INTERNAL_ERROR
+            bean.status = UserEnableResult.INTERNAL_ERROR
         }
     }
 
