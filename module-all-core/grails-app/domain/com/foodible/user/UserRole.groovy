@@ -5,7 +5,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder
 class UserRole implements Serializable {
 
 	User user
-	Role role
+
+    Role role
 
 	boolean equals(other) {
 		if (!(other instanceof UserRole)) {

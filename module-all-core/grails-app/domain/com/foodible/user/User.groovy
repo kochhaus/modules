@@ -6,10 +6,6 @@ class User {
 
     String password
 
-    String firstname
-
-    String lastname
-
     String registrationCode
 
     boolean enabled
@@ -20,11 +16,13 @@ class User {
 
     boolean passwordExpired
 
+    Date dateCreated
+
+    Date lastUpdated
+
 	static constraints = {
         email blank: false, unique: true, email: true
 		password blank: false
-        firstname blank: false
-        lastname blank: false
         registrationCode nullable: true
 	}
 

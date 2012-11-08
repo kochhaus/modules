@@ -1,4 +1,4 @@
-package com.foodible
+package com.foodible.service
 
 public enum ServiceType {
     COOKING_COURSE,
